@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import rainlf.zabbix.demo.ItemDO;
-import rainlf.zabbix.demo.ItemHistoryDataDO;
+import rainlf.zabbix.demo.ItemDataDO;
 import rainlf.zabbix.service.ZabbixService;
 
 import java.util.ArrayList;
@@ -51,9 +51,9 @@ public class ZabbixServiceImpl implements ZabbixService{
     }
 
     @Override
-    public ItemHistoryDataDO getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill) {
+    public List<ItemDataDO> getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill) {
         String auth = getZabbixAuth();
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject;
         if ((timeFrom == null) || (timeTill == null)) {
             jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"history\":"
                     + valueType + ",\"itemids\":\""
@@ -71,20 +71,16 @@ public class ZabbixServiceImpl implements ZabbixService{
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
-        ItemHistoryDataDO itemHistoryDataDO = new ItemHistoryDataDO();
-        itemHistoryDataDO.setItemId(itemId);
-        List<ItemHistoryDataDO.ItemHistoryData> itemHistoryDataList = new ArrayList<>();
+        List<ItemDataDO> itemDataList = new ArrayList<>();
         for (int i=0; i<resultList.size(); i++) {
-            // doubt rain
-            ItemHistoryDataDO.ItemHistoryData itemHistoryData = new ItemHistoryDataDO().new ItemHistoryData();
-            itemHistoryData.setTimeStamp(resultList.getJSONObject(i).getString("clock"));
-            itemHistoryData.setValue(resultList.getJSONObject(i).getString("value"));
+            ItemDataDO itemDataDO = new ItemDataDO();
+            itemDataDO.setTimeStamp(resultList.getJSONObject(i).getString("clock"));
+            itemDataDO.setValue(resultList.getJSONObject(i).getString("value"));
 
-            itemHistoryDataList.add(itemHistoryData);
+            itemDataList.add(itemDataDO);
         }
-        itemHistoryDataDO.setItemHistoryDataList(itemHistoryDataList);
 
-        return itemHistoryDataDO;
+        return itemDataList;
     }
 
     @Override

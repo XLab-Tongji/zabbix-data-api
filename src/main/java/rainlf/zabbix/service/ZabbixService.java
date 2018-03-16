@@ -1,7 +1,7 @@
 package rainlf.zabbix.service;
 
 import rainlf.zabbix.demo.ItemDO;
-import rainlf.zabbix.demo.ItemHistoryDataDO;
+import rainlf.zabbix.demo.ItemDataDO;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public interface ZabbixService {
      * @param timeTill
      * @return
      */
-    ItemHistoryDataDO getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill);
+    List<ItemDataDO> getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill);
 
     /**
      * 获取主机的所有监控项信息

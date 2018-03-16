@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import rainlf.zabbix.demo.ItemDO;
-import rainlf.zabbix.demo.ItemHistoryDataDO;
+import rainlf.zabbix.demo.ItemDataDO;
 import rainlf.zabbix.service.ZabbixService;
 
 import java.util.List;
@@ -30,11 +30,10 @@ public class ZabbixController {
 
     @ApiOperation(value = "获取zabbix某监控项的指定时间段内的历史数据")
     @RequestMapping(value = "itemData", method = RequestMethod.GET)
-    public ItemHistoryDataDO getItemHistoryData(@RequestParam("itemId") String itemId,
-                                                @RequestParam("valueType") Integer valueType,
-                                                @RequestParam(value = "timeFrom", required = false) Long timeFrom,
-                                                @RequestParam(value = "timeTill", required = false) Long timeTill) {
-        new ItemHistoryDataDO();
+    public List<ItemDataDO> getItemHistoryData(@RequestParam("itemId") String itemId,
+                                         @RequestParam("valueType") Integer valueType,
+                                         @RequestParam(value = "timeFrom", required = false) Long timeFrom,
+                                         @RequestParam(value = "timeTill", required = false) Long timeTill) {
         return zabbixService.getItemHistoryData(itemId, valueType, timeFrom, timeTill);
     }
 
