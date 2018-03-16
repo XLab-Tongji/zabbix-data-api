@@ -20,27 +20,26 @@ public interface ZabbixService {
     List<String> getZabbixHosts();
 
     /**
-     * 获取某主机的某监控项ID
-     * @param hostId
-     * @param itemDescription
-     * @return
-     */
-    String getHostItemId(String hostId, String itemDescription);
-
-    /**
      * 获取某监控项的指定时间段内的历史数据
      * @param itemId
-     * @param itemDescription
+     * @param valueType
      * @param timeFrom
      * @param timeTill
      * @return
      */
-    ItemHistoryDataDO getItemHistoryData(String itemId, String itemDescription, Long timeFrom, Long timeTill);
+    ItemHistoryDataDO getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill);
 
     /**
-     * 获取主机的所有监控项key
+     * 获取主机的所有监控项信息
      * @param hostId
      * @return
      */
     List<ItemDO> getHostItem(String hostId);
+
+    /**
+     * 获取某监控项信息
+     * @param itemId
+     * @return
+     */
+    ItemDO getItemInformation(String itemId);
 }

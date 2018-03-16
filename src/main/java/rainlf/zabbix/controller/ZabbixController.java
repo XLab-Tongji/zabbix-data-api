@@ -30,21 +30,25 @@ public class ZabbixController {
         return zabbixService.getZabbixHosts();
     }
 
-    @ApiOperation(value = "获取zabbix某个监控主机的某个监控项ID")
-    @RequestMapping(value = "itemId", method = RequestMethod.GET)
-    public String getHostItemId(@RequestParam("hostId") String hostId, @RequestParam("itemDescription") String itemDescription) {
-        return zabbixService.getHostItemId(hostId, itemDescription);
+    @ApiOperation(value = "获取zabbix某监控项的指定时间段内的历史数据")
+    @RequestMapping(value = "itemData", method = RequestMethod.GET)
+    public ItemHistoryDataDO getItemHistoryData(@RequestParam("itemId") String itemId,
+                                                @RequestParam("valueType") Integer valueType,
+                                                @RequestParam(value = "timeFrom", required = false) Long timeFrom,
+                                                @RequestParam(value = "timeTill", required = false) Long timeTill) {
+        new ItemHistoryDataDO();
+        return zabbixService.getItemHistoryData(itemId, valueType, timeFrom, timeTill);
     }
 
-    @ApiOperation(value = "获取zabbix某监控项的指定时间段内的历史数据")
-    @RequestMapping(value = "historyData", method = RequestMethod.GET)
-    public ItemHistoryDataDO getItemHistoryData(@RequestParam("itemId") String itemId, @RequestParam("itemDescription") String itemDescription, @RequestParam("timeFrom") Long timeFrom, @RequestParam("timeTill") Long timeTill) {
-        return zabbixService.getItemHistoryData(itemId, itemDescription, timeFrom, timeTill);
-    }
-
-    @ApiOperation(value = "获取zabbix某监控项的指定时间段内的历史数据")
+    @ApiOperation(value = "获取zabbix某主机的所有监控项信息")
     @RequestMapping(value = "items", method = RequestMethod.GET)
     public List<ItemDO> getHostItem(@RequestParam("hostId") String hostId) {
         return zabbixService.getHostItem(hostId);
+    }
+
+    @ApiOperation(value = "获取zabbix某监控项的信息")
+    @RequestMapping(value = "item", method = RequestMethod.GET)
+    public ItemDO getItemInformation(@RequestParam("itemId") String itemId) {
+        return zabbixService.getItemInformation(itemId);
     }
 }

@@ -4,18 +4,18 @@ import java.util.List;
 
 public class ItemHistoryDataDO {
 
-    private String name;
+    private String itemId;
     private List<ItemHistoryData> itemHistoryDataList;
 
     public ItemHistoryDataDO() {
     }
 
-    public String getName() {
-        return name;
+    public String getItemId() {
+        return itemId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public List<ItemHistoryData> getItemHistoryDataList() {
@@ -29,7 +29,7 @@ public class ItemHistoryDataDO {
     @Override
     public String toString() {
         return "ItemHistoryDataDO{" +
-                "name='" + name + '\'' +
+                "itemId='" + itemId + '\'' +
                 ", itemHistoryDataList=" + itemHistoryDataList.toString() +
                 '}';
     }

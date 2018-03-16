@@ -51,32 +51,28 @@ public class ZabbixServiceImpl implements ZabbixService{
     }
 
     @Override
-    public String getHostItemId(String hostId, String itemDescription) {
+    public ItemHistoryDataDO getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill) {
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
-                + hostId + "\",\"search\":{\"key_\":\"" + itemDescription + "\"},\"sortfield\":\"name\"},\"auth\":\""
-                + auth + "\",\"id\":1}");
-
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
-        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
-
-        return resultList.getJSONObject(0).getString("itemid");
-    }
-
-    @Override
-    public ItemHistoryDataDO getItemHistoryData(String itemId, String itemDescription, Long timeFrom, Long timeTill) {
-        String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"history\":0,\"itemids\":\""
-                + itemId + "\",\"sortfield\":\"clock\",\"sortorder\":\"ASC\",\"time_from\":\""
-                + timeFrom + "\",\"time_till\":\""
-                + timeTill + "\"},\"auth\":\""
-                + auth + "\",\"id\":1}");
+        JSONObject jsonObject = new JSONObject();
+        if ((timeFrom == null) || (timeTill == null)) {
+            jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"history\":"
+                    + valueType + ",\"itemids\":\""
+                    + itemId + "\",\"sortfield\":\"clock\",\"sortorder\":\"ASC\"},\"auth\":\""
+                    + auth + "\",\"id\":1}");
+        } else {
+            jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"history\":"
+                    + valueType + ",\"itemids\":\""
+                    + itemId + "\",\"sortfield\":\"clock\",\"sortorder\":\"ASC\",\"time_from\":\""
+                    + timeFrom + "\",\"time_till\":\""
+                    + timeTill + "\"},\"auth\":\""
+                    + auth + "\",\"id\":1}");
+        }
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
         ItemHistoryDataDO itemHistoryDataDO = new ItemHistoryDataDO();
-        itemHistoryDataDO.setName(itemDescription);
+        itemHistoryDataDO.setItemId(itemId);
         List<ItemHistoryDataDO.ItemHistoryData> itemHistoryDataList = new ArrayList<>();
         for (int i=0; i<resultList.size(); i++) {
             // doubt rain
@@ -104,6 +100,7 @@ public class ZabbixServiceImpl implements ZabbixService{
         List<ItemDO> itemDOList = new ArrayList<>();
         for (int i=0; i<resultList.size(); i++) {
             ItemDO itemDO = new ItemDO();
+            itemDO.setItemId(resultList.getJSONObject(i).getString("itemid"));
             itemDO.setName(resultList.getJSONObject(i).getString("name"));
             itemDO.setValueType(resultList.getJSONObject(i).getString("value_type"));
             itemDO.setKey(resultList.getJSONObject(i).getString("key_"));
@@ -113,6 +110,27 @@ public class ZabbixServiceImpl implements ZabbixService{
         }
 
         return itemDOList;
+    }
+
+    @Override
+    public ItemDO getItemInformation(String itemId) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"itemids\":\""
+                + itemId + "\",\"sortfield\":\"name\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
+
+        ItemDO itemDO = new ItemDO();
+        JSONObject itemJsonObj = resultList.getJSONObject(0);
+        itemDO.setItemId(itemJsonObj.getString("itemid"));
+        itemDO.setName(itemJsonObj.getString("name"));
+        itemDO.setValueType(itemJsonObj.getString("value_type"));
+        itemDO.setKey(itemJsonObj.getString("key_"));
+        itemDO.setDescription(itemJsonObj.getString("description"));
+
+        return itemDO;
     }
 
 }
