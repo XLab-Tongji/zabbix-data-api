@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemHistoryDataDO;
 import rainlf.zabbix.service.ZabbixService;
 
@@ -82,11 +83,36 @@ public class ZabbixServiceImpl implements ZabbixService{
             ItemHistoryDataDO.ItemHistoryData itemHistoryData = new ItemHistoryDataDO().new ItemHistoryData();
             itemHistoryData.setTimeStamp(resultList.getJSONObject(i).getString("clock"));
             itemHistoryData.setValue(resultList.getJSONObject(i).getString("value"));
+
             itemHistoryDataList.add(itemHistoryData);
         }
         itemHistoryDataDO.setItemHistoryDataList(itemHistoryDataList);
 
         return itemHistoryDataDO;
+    }
+
+    @Override
+    public List<ItemDO> getHostItem(String hostId) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
+                + hostId + "\",\"sortfield\":\"name\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
+
+        List<ItemDO> itemDOList = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            ItemDO itemDO = new ItemDO();
+            itemDO.setName(resultList.getJSONObject(i).getString("name"));
+            itemDO.setValueType(resultList.getJSONObject(i).getString("value_type"));
+            itemDO.setKey(resultList.getJSONObject(i).getString("key_"));
+            itemDO.setDescription(resultList.getJSONObject(i).getString("description"));
+
+            itemDOList.add(itemDO);
+        }
+
+        return itemDOList;
     }
 
 }

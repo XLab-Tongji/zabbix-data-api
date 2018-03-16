@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemHistoryDataDO;
 import rainlf.zabbix.service.ZabbixService;
 
@@ -39,5 +40,11 @@ public class ZabbixController {
     @RequestMapping(value = "historyData", method = RequestMethod.GET)
     public ItemHistoryDataDO getItemHistoryData(@RequestParam("itemId") String itemId, @RequestParam("itemDescription") String itemDescription, @RequestParam("timeFrom") Long timeFrom, @RequestParam("timeTill") Long timeTill) {
         return zabbixService.getItemHistoryData(itemId, itemDescription, timeFrom, timeTill);
+    }
+
+    @ApiOperation(value = "获取zabbix某监控项的指定时间段内的历史数据")
+    @RequestMapping(value = "items", method = RequestMethod.GET)
+    public List<ItemDO> getHostItem(@RequestParam("hostId") String hostId) {
+        return zabbixService.getHostItem(hostId);
     }
 }
