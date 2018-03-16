@@ -2,16 +2,14 @@ package rainlf.zabbix.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemHistoryDataDO;
 import rainlf.zabbix.service.ZabbixService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class ZabbixController {
 
