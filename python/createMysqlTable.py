@@ -107,3 +107,11 @@ CREATE TABLE `%s` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 ''' % table)
+
+
+def transfer(value):
+    return value
+
+with open('./zabbix.sql.xml', 'w') as file2:
+    for table in table_names:
+        file2.write('< table tableName="%s" domainObjectName="%s" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" > </table >\n' % (table, transfer(table)))

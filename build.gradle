@@ -7,6 +7,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "gradle.plugin.com.arenagod.gradle:mybatis-generator-plugin:1.4"
 	}
 }
 
@@ -14,6 +15,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: "com.arenagod.gradle.MybatisGenerator"
 
 group = 'rainlf'
 version = '0.0.1-SNAPSHOT'
@@ -38,4 +40,14 @@ dependencies {
 
 	compile group: 'org.apache.poi', name: 'poi', version: '3.15'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
+}
+
+configurations {
+    mybatisGenerator
+    compile.exclude group:'ch.qos.logback'
+}
+
+mybatisGenerator {
+    verbose = true
+    configFile = 'src/main/resources/generatorConfig.xml'
 }
