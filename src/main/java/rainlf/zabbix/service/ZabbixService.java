@@ -42,4 +42,11 @@ public interface ZabbixService {
      * @return
      */
     ItemDO getItemInformation(String itemId);
+
+    /**
+     * 获取主机所有监控项的key
+     * @param hostId
+     * @return
+     */
+    List<String> getItemsKey(String hostId);
 }

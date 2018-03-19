@@ -48,4 +48,10 @@ public class ZabbixController {
     public ItemDO getItemInformation(@RequestParam("itemId") String itemId) {
         return zabbixService.getItemInformation(itemId);
     }
+
+    @ApiOperation(value = "获取zabbix某主机的所有监控项key")
+    @RequestMapping(value = "itemsKey", method = RequestMethod.GET)
+    public List<String> getItemsKey(@RequestParam("hostId") String hostId) {
+        return zabbixService.getItemsKey(hostId);
+    }
 }

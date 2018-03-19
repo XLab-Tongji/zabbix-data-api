@@ -129,4 +129,22 @@ public class ZabbixServiceImpl implements ZabbixService{
         return itemDO;
     }
 
+    @Override
+    public List<String> getItemsKey(String hostId) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
+                + hostId + "\",\"sortfield\":\"name\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
+
+        List<String> itemKeyList = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            itemKeyList.add(resultList.getJSONObject(i).getString("key_"));
+        }
+
+        return itemKeyList;
+    }
+
 }
