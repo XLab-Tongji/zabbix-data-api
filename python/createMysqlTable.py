@@ -83,35 +83,33 @@ table_names = [
   "agent.version"
 ]
 
-'''
-CREATE SCHEMA zabbix_data
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `clock` int(11) DEFAULT NULL,
-  `value` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+table_names_new = []
 
-'''
-
+for table in table_names:
+    table = table.replace(',', '_')
+    table = table.replace('.', '_')
+    table = table.replace('[', '_')
+    table = table.replace(']', '_')
+    table = table.replace('/', '_')
+    table_names_new.append(table)
 
 with open('./zabbix.sql', 'w') as file:
-    file.write('CREATE SCHEMA zabbix_data')
+    file.write('DROP SCHEMA IF EXISTS `zabbix_data`;\n')
+    file.write('CREATE SCHEMA zabbix_data;\n')
+    file.write('USE zabbix_data;\n')
 
-    for table in table_names:
+    for table in table_names_new:
         file.write('''
+DROP TABLE IF EXISTS `%s`;
 CREATE TABLE `%s` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `clock` int(11) DEFAULT NULL,
   `value` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
-''' % table)
+''' % (table, table))
 
-
-def transfer(value):
-    return value
 
 with open('./zabbix.sql.xml', 'w') as file2:
-    for table in table_names:
-        file2.write('< table tableName="%s" domainObjectName="%s" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" > </table >\n' % (table, transfer(table)))
+    for i in range(len(table_names_new)):
+        file2.write('<table tableName="%s" domainObjectName="ZaNo%s" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" > </table>\n' % (table_names_new[i], i))
