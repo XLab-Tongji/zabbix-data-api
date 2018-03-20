@@ -4,6 +4,9 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -43,11 +46,9 @@ dependencies {
 }
 
 configurations {
-    mybatisGenerator
-    compile.exclude group:'ch.qos.logback'
+	mybatisGenerator
 }
-
 mybatisGenerator {
-    verbose = true
-    configFile = 'src/main/resources/generatorConfig.xml'
+	verbose = true
+	configFile = 'src/main/resources/generatorConfig.xml'
 }
