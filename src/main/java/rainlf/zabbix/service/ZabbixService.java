@@ -34,7 +34,7 @@ public interface ZabbixService {
      * @param hostId
      * @return
      */
-    List<ItemDO> getHostItem(String hostId);
+    List<ItemDO> getHostItems(String hostId);
 
     /**
      * 获取某监控项信息
@@ -49,4 +49,5 @@ public interface ZabbixService {
      * @return
      */
     List<String> getItemsKey(String hostId);
+
 }

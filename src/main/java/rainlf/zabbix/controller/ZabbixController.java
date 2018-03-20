@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemDataDO;
+import rainlf.zabbix.service.DataService;
 import rainlf.zabbix.service.ZabbixService;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -15,6 +17,9 @@ public class ZabbixController {
 
     @Autowired
     private ZabbixService zabbixService;
+
+    @Autowired
+    private DataService dataService;
 
     @ApiOperation(value = "获取zabbix授权码")
     @RequestMapping(value = "auth", method = RequestMethod.GET)
@@ -40,7 +45,7 @@ public class ZabbixController {
     @ApiOperation(value = "获取zabbix某主机的所有监控项信息")
     @RequestMapping(value = "items", method = RequestMethod.GET)
     public List<ItemDO> getHostItem(@RequestParam("hostId") String hostId) {
-        return zabbixService.getHostItem(hostId);
+        return zabbixService.getHostItems(hostId);
     }
 
     @ApiOperation(value = "获取zabbix某监控项的信息")
@@ -53,5 +58,13 @@ public class ZabbixController {
     @RequestMapping(value = "itemsKey", method = RequestMethod.GET)
     public List<String> getItemsKey(@RequestParam("hostId") String hostId) {
         return zabbixService.getItemsKey(hostId);
+    }
+
+    @ApiOperation(value = "获取主机的监控数据集")
+    @RequestMapping(value = "hostDataSet", method = RequestMethod.GET)
+    public List<Map<String, String>> getHostDataSet(@RequestParam("hostId") String hostId,
+                                                    @RequestParam("timeFrom") Integer timeFrom,
+                                                    @RequestParam("timeTill") Integer timeTill) {
+        return dataService.getHostDataSet(hostId, timeFrom, timeTill);
     }
 }

@@ -84,7 +84,7 @@ public class ZabbixServiceImpl implements ZabbixService{
     }
 
     @Override
-    public List<ItemDO> getHostItem(String hostId) {
+    public List<ItemDO> getHostItems(String hostId) {
         String auth = getZabbixAuth();
         JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
                 + hostId + "\",\"sortfield\":\"name\"},\"auth\":\""
