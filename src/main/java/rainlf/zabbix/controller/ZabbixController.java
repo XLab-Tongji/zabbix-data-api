@@ -63,8 +63,8 @@ public class ZabbixController {
     @ApiOperation(value = "获取主机的监控数据集")
     @RequestMapping(value = "hostDataSet", method = RequestMethod.GET)
     public List<Map<String, String>> getHostDataSet(@RequestParam("hostId") String hostId,
-                                                    @RequestParam("timeFrom") Integer timeFrom,
-                                                    @RequestParam("timeTill") Integer timeTill) {
+                                                    @RequestParam("timeFrom") Long timeFrom,
+                                                    @RequestParam("timeTill") Long timeTill) {
         return dataService.getHostDataSet(hostId, timeFrom, timeTill);
     }
 }

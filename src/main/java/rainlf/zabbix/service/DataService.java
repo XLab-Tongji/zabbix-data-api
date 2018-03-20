@@ -12,5 +12,7 @@ public interface DataService {
      * @param timeTill
      * @return
      */
-    List<Map<String, String>> getHostDataSet(String hostId, Integer timeFrom, Integer timeTill);
+    List<Map<String, String>> getHostDataSet(String hostId, Long timeFrom, Long timeTill);
+
+    void writeHostDataSetExcel(List<Map<String, String>> timestampDataMapList);
 }
