@@ -10,6 +10,7 @@ import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemDataDO;
 import rainlf.zabbix.service.DataService;
 import rainlf.zabbix.service.ZabbixService;
+import rainlf.zabbix.util.DataUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -80,8 +81,17 @@ public class DataServiceImpl implements DataService {
         // 获取表头
         List<String> tableTitleList = new ArrayList<>();
         for (Map.Entry<String, String> entry : timestampDataMapList.get(0).entrySet()) {
-            tableTitleList.add(entry.getKey());
+            String key = entry.getKey();
+            if (DataUtils.cleanKey(key)) {
+                tableTitleList.add(key);
+            }
         }
+
+        // 重拍
+        tableTitleList.remove("hostId");
+        tableTitleList.remove("timestamp");
+        tableTitleList.add(0, "hostId");
+        tableTitleList.add(1, "timestamp");
 
         // 表头
         Row row = sheet.createRow(0);

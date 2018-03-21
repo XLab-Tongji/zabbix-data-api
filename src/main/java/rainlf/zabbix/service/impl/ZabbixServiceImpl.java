@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import rainlf.zabbix.demo.ItemDO;
 import rainlf.zabbix.demo.ItemDataDO;
 import rainlf.zabbix.service.ZabbixService;
+import rainlf.zabbix.util.DataUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,14 +96,15 @@ public class ZabbixServiceImpl implements ZabbixService{
 
         List<ItemDO> itemDOList = new ArrayList<>();
         for (int i=0; i<resultList.size(); i++) {
-            ItemDO itemDO = new ItemDO();
-            itemDO.setItemId(resultList.getJSONObject(i).getString("itemid"));
-            itemDO.setName(resultList.getJSONObject(i).getString("name"));
-            itemDO.setValueType(resultList.getJSONObject(i).getString("value_type"));
-            itemDO.setKey(resultList.getJSONObject(i).getString("key_"));
-            itemDO.setDescription(resultList.getJSONObject(i).getString("description"));
-
-            itemDOList.add(itemDO);
+            if (DataUtils.cleanKey(resultList.getJSONObject(i).getString("key_"))) {
+                ItemDO itemDO = new ItemDO();
+                itemDO.setItemId(resultList.getJSONObject(i).getString("itemid"));
+                itemDO.setName(resultList.getJSONObject(i).getString("name"));
+                itemDO.setValueType(resultList.getJSONObject(i).getString("value_type"));
+                itemDO.setKey(resultList.getJSONObject(i).getString("key_"));
+                itemDO.setDescription(resultList.getJSONObject(i).getString("description"));
+                itemDOList.add(itemDO);
+            }
         }
 
         return itemDOList;
