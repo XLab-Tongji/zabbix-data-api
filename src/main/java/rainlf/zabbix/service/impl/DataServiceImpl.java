@@ -1,5 +1,9 @@
 package rainlf.zabbix.service.impl;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rainlf.zabbix.demo.ItemDO;
@@ -7,6 +11,8 @@ import rainlf.zabbix.demo.ItemDataDO;
 import rainlf.zabbix.service.DataService;
 import rainlf.zabbix.service.ZabbixService;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +42,9 @@ public class DataServiceImpl implements DataService {
             historyDataMap.put(itemDO.getKey(), itemDataDOList);
         }
 
-        // mock data time
-//        int timeFrom = 10000;
-//        int timeTill = 20000;
-
         // 遍历时间片
         List<Map<String, String>> timestampDataMapList = new ArrayList<>();
-        for (long timestamp=timeFrom; timestamp<=timeTill; timestamp+=5) {
+        for (long timestamp=timeFrom; timestamp<timeTill; timestamp+=5) {
             long timestamp2 = timestamp + 5;
 
             // 遍历historyDataMap
@@ -60,7 +62,7 @@ public class DataServiceImpl implements DataService {
                     }
                 }
                 if (!find) {
-                    timestampDataMap.put(entry.getKey(), null);
+                    timestampDataMap.put(entry.getKey(), "null");
                 }
             }
             timestampDataMapList.add(timestampDataMap);
@@ -70,7 +72,50 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public void writeHostDataSetExcel(List<Map<String, String>> timestampDataMapList) {
+    public String writeToFile(String hostId, List<Map<String, String>> timestampDataMapList) {
 
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("sheet1");
+
+        // 获取表头
+        List<String> tableTitleList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : timestampDataMapList.get(0).entrySet()) {
+            tableTitleList.add(entry.getKey());
+        }
+
+        // 表头
+        Row row = sheet.createRow(0);
+        for (int i=0; i<tableTitleList.size(); i++) {
+            row.createCell(i).setCellValue(tableTitleList.get(i));
+        }
+
+        // 内容
+        int index = 0;
+        for (Map<String, String> timestampDataMap : timestampDataMapList) {
+            index ++;
+            int cellIndex = 0;
+            row = sheet.createRow(index);
+            for (String key : tableTitleList) {
+                String cellValue = timestampDataMap.get(key);
+                row.createCell(cellIndex).setCellValue(cellValue);
+                cellIndex ++;
+            }
+        }
+
+        // 写入文件
+        try {
+            FileOutputStream out = new FileOutputStream("/tmp/" + hostId + ".csv");
+            workbook.write(out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getHostDataSetCSV(String hostId, Long timeFrom, Long timeTill) {
+        return this.writeToFile(hostId, this.getHostDataSet(hostId, timeFrom, timeTill));
     }
 }

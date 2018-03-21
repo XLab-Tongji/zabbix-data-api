@@ -67,4 +67,12 @@ public class ZabbixController {
                                                     @RequestParam("timeTill") Long timeTill) {
         return dataService.getHostDataSet(hostId, timeFrom, timeTill);
     }
+
+    @ApiOperation(value = "获取主机的监控数据集文件")
+    @RequestMapping(value = "hostDataSetCSV", method = RequestMethod.GET)
+    public String getHostDataSetCSV(@RequestParam("hostId") String hostId,
+                                                    @RequestParam("timeFrom") Long timeFrom,
+                                                    @RequestParam("timeTill") Long timeTill) {
+        return dataService.getHostDataSetCSV(hostId, timeFrom, timeTill);
+    }
 }
