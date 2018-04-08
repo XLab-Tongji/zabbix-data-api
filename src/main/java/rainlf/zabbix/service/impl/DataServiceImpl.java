@@ -14,10 +14,7 @@ import rainlf.zabbix.util.DataUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataServiceImpl implements DataService {
@@ -106,6 +103,11 @@ public class DataServiceImpl implements DataService {
             int cellIndex = 0;
             row = sheet.createRow(index);
             for (String key : tableTitleList) {
+                // 跳过忽略key
+                if (isBlackKey(key)) {
+                    continue;
+                }
+
                 // 归整化时间戳
                 String cellValue = timestampDataMap.get(key);
                 if ("timestamp".equals(key)) {
@@ -153,5 +155,21 @@ public class DataServiceImpl implements DataService {
         Sheet sheet = workbook.getSheetAt(0);
 
         return workbook;
+    }
+
+    private static Boolean isBlackKey(String key) {
+        List<String> blackList = Arrays.asList("veth51506c2", "vethr060ca4614c", "vethr3a98e4f043",
+                "vethr3d0d1191a8", "vethr6e9a1a0292", "vethr7c099ce9d2", "vethr28dfd2b4b7", "vethr38faa2f76b",
+                "vethr84dabbbc5c", "vethr943f5c4d3c", "vethr4974e4532e", "vethr6674dee1c1", "vethr6898b2944b",
+                "vethr8483e9380f", "vethr35292c940d", "vethraeace4bac9", "vethrbd0e923e36", "vethre5d19bea07",
+                "veth51506c2", "vethr060ca4614c", "vethr3a98e4f043", "vethr3d0d1191a8", "vethr6e9a1a0292",
+                "vethr7c099ce9d2", "vethr28dfd2b4b7", "vethr38faa2f76b", "vethr84dabbbc5c", "vethr943f5c4d3c",
+                "vethr4974e4532e", "vethr6674dee1c1", "vethr6898b2944b", "vethr8483e9380f", "vethr35292c940d",
+                "vethraeace4bac9", "vethrbd0e923e36", "vethre5d19bea07");
+        if (blackList.contains(key)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
