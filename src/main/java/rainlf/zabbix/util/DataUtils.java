@@ -2,7 +2,11 @@ package rainlf.zabbix.util;
 
 public class DataUtils {
 
-    // 过滤掉不需要的监控项
+    /**
+     * 过滤掉不需要的监控项
+     * @param key
+     * @return
+     */
     public static Boolean cleanKey(String key) {
         if (("agent.ping".equals(key)) ||
                 ("vfs.file.cksum[/etc/passwd]".equals(key)) ||

@@ -87,7 +87,7 @@ public class DataServiceImpl implements DataService {
             }
         }
 
-        // 重拍
+        // 重排
         tableTitleList.remove("hostId");
         tableTitleList.remove("timestamp");
         tableTitleList.add(0, "hostId");
@@ -106,11 +106,26 @@ public class DataServiceImpl implements DataService {
             int cellIndex = 0;
             row = sheet.createRow(index);
             for (String key : tableTitleList) {
+                // 归整化时间戳
                 String cellValue = timestampDataMap.get(key);
-                row.createCell(cellIndex).setCellValue(cellValue);
+                if ("timestamp".equals(key)) {
+                    int end = Integer.valueOf(cellValue.substring(cellValue.length()-1));
+                    int tempTimestamp = 0;
+                    if (end > 5) {
+                        tempTimestamp = Integer.valueOf(cellValue) - end + 5;
+                    } else {
+                        tempTimestamp = Integer.valueOf(cellValue) - end;
+                    }
+                    row.createCell(cellIndex).setCellValue(String.valueOf(tempTimestamp));
+                } else {
+                    row.createCell(cellIndex).setCellValue(cellValue);
+                }
                 cellIndex ++;
             }
         }
+
+        // 清洗数据
+        workbook = cleanDataSet(workbook);
 
         // 写入文件
         try {
@@ -127,5 +142,16 @@ public class DataServiceImpl implements DataService {
     @Override
     public String getHostDataSetCSV(String hostId, Long timeFrom, Long timeTill) {
         return this.writeToFile(hostId, this.getHostDataSet(hostId, timeFrom, timeTill));
+    }
+
+    /**
+     * 清洗数据
+     * @param workbook
+     * @return
+     */
+    private static Workbook cleanDataSet(Workbook workbook) {
+        Sheet sheet = workbook.getSheetAt(0);
+
+        return workbook;
     }
 }
