@@ -1,53 +1,62 @@
 package rainlf.zabbix.service;
 
-import rainlf.zabbix.demo.ItemDO;
-import rainlf.zabbix.demo.ItemDataDO;
+import rainlf.zabbix.domain.ZabbixHost;
+import rainlf.zabbix.domain.ZabbixItem;
+import rainlf.zabbix.domain.ZabbixItemData;
 
 import java.util.List;
 
 public interface ZabbixService {
 
     /**
-     * 获取zabbix服务器授权码
+     * 获取zabbix授权码
      * @return
      */
     String getZabbixAuth();
 
     /**
-     * 获取zabbix被监控主机列表
+     * 获取zabbix监控主机列表
      * @return
      */
-    List<String> getZabbixHosts();
+    List<ZabbixHost> getZabbixHosts();
 
     /**
-     * 获取某监控项的指定时间段内的历史数据
+     * 获取zabbix监控项Id和ValueType
+     * @param hostId
+     * @param key
+     * @return
+     */
+    ZabbixItem getZabbixItem(String hostId, String key);
+
+    /**
+     * 根据指定的监控项key list, 获取zabbix监控项列表
+     * @param hostId
+     * @return
+     */
+    List<ZabbixItem> getZabbixItemList(String hostId);
+
+    /**
+     * 获取zabbix监控项的历史数据
      * @param itemId
      * @param valueType
+     * @return
+     */
+    List<ZabbixItemData> getZabbixItemHistoryData(String itemId, String valueType, String timeFrom, String timeTill);
+
+    /**
+     * 获取zabbix主机监控数据集
+     * @param hostId
      * @param timeFrom
      * @param timeTill
      * @return
      */
-    List<ItemDataDO> getItemHistoryData(String itemId, Integer valueType, Long timeFrom, Long timeTill);
+    List<List<ZabbixItemData>> getZabbixHostDataSet(String hostId, String timeFrom, String timeTill);
 
     /**
-     * 获取主机的所有监控项信息
+     * 导出zabbix主机监控数据集
      * @param hostId
-     * @return
+     * @param timeFrom
+     * @param timeTill
      */
-    List<ItemDO> getHostItems(String hostId);
-
-    /**
-     * 获取某监控项信息
-     * @param itemId
-     * @return
-     */
-    ItemDO getItemInformation(String itemId);
-
-    /**
-     * 获取主机所有监控项的key
-     * @param hostId
-     * @return
-     */
-    List<String> getItemsKey(String hostId);
-
+    void exportZabbixHostDataSet(String hostId, String timeFrom, String timeTill);
 }

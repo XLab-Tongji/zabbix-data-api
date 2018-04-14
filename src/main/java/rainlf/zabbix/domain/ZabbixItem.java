@@ -1,30 +1,21 @@
-package rainlf.zabbix.demo;
+package rainlf.zabbix.domain;
 
-public class ItemDO {
+public class ZabbixItem {
 
     private String itemId;
-    private String name;
     private String valueType;
     private String key;
-    private String description;
 
-    public ItemDO() {
+    public ZabbixItem() {
     }
 
     public String getItemId() {
+
         return itemId;
     }
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getValueType() {
@@ -43,22 +34,12 @@ public class ItemDO {
         this.key = key;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
-        return "ItemDO{" +
+        return "ZabbixItem{" +
                 "itemId='" + itemId + '\'' +
-                ", name='" + name + '\'' +
                 ", valueType='" + valueType + '\'' +
                 ", key='" + key + '\'' +
-                ", description='" + description + '\'' +
                 '}';
     }
 }
