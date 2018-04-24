@@ -23,7 +23,7 @@ public class ZabbixController {
     }
 
     @ApiOperation(value = "获取zabbix主机监控数据集")
-    @RequestMapping(value = "hosts", method = RequestMethod.GET)
+    @RequestMapping(value = "hostData", method = RequestMethod.GET)
     public void getZabbixHostDataSet(@RequestParam("hostId") String hostId,
                                      @RequestParam("timeFrom") String timeFrom,
                                      @RequestParam("timeTill") String timeTill) {

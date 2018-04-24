@@ -21,7 +21,7 @@ public interface ZabbixService {
     List<ZabbixHost> getZabbixHosts();
 
     /**
-     * 获取zabbix监控项Id和ValueType
+     * 根据监控项key，获取zabbix监控项Id和ValueType
      * @param hostId
      * @param key
      * @return
@@ -29,7 +29,7 @@ public interface ZabbixService {
     ZabbixItem getZabbixItem(String hostId, String key);
 
     /**
-     * 根据指定的监控项key list, 获取zabbix监控项列表
+     * 根据指定的hostId, 获取zabbix监控项列表
      * @param hostId
      * @return
      */
