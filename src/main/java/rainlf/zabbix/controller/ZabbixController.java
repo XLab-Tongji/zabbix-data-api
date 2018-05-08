@@ -1,11 +1,25 @@
 package rainlf.zabbix.controller;
 
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rainlf.zabbix.domain.ZabbixHost;
 import rainlf.zabbix.service.ZabbixService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 
@@ -28,6 +42,19 @@ public class ZabbixController {
                                      @RequestParam("timeFrom") String timeFrom,
                                      @RequestParam("timeTill") String timeTill) {
         zabbixService.exportZabbixHostDataSet(hostId, timeFrom, timeTill);
+    }
+
+    @ApiOperation(value="下载生成的EXCEL文件")
+    @RequestMapping(value="filedownload",method=RequestMethod.GET)
+    public void downloadFile(HttpServletResponse response,@RequestParam("hostId") String hostId,
+                             @RequestParam("timeFrom") String timeFrom,
+                             @RequestParam("timeTill") String timeTill)throws IOException{
+        Workbook workbook=zabbixService.ZabbixHostDataSet(hostId, timeFrom, timeTill);
+        String filename="Zabbix.xls";
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-disposition", "attachment;filename=ZabbixHostDataSet.xls");//默认Excel名称
+        response.flushBuffer();
+        workbook.write(response.getOutputStream());
     }
 
 }

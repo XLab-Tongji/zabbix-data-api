@@ -200,5 +200,57 @@ public class ZabbixServiceImpl implements ZabbixService {
         }
     }
 
+    @Override
+    public Workbook ZabbixHostDataSet(String hostId, String timeFrom, String timeTill) {
+        List<ZabbixItem> zabbixItemList = getZabbixItemList(hostId);
+        List<List<ZabbixItemData>> zabbixHostData = getZabbixHostDataSet(hostId, timeFrom, timeTill);
 
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("data");
+
+        // 首行
+        Row row = sheet.createRow(0);
+        row.createCell(0).setCellValue("host");
+        row.createCell(1).setCellValue("clock");
+
+        // 首行
+        int index = 2;
+        for (ZabbixItem zabbixItem : zabbixItemList) {
+            row.createCell(index).setCellValue(zabbixItem.getKey());
+            index++;
+        }
+
+        // 按列写数据
+        int rowIndex = 1;
+        int cellIndex = 2;
+        for (List<ZabbixItemData> zabbixItemDataList : zabbixHostData) {
+            for (ZabbixItemData zabbixItemData : zabbixItemDataList) {
+                row = sheet.getRow(rowIndex);
+                if (null == row) {
+                    row = sheet.createRow(rowIndex);
+                }
+                row.createCell(cellIndex).setCellValue(zabbixItemData.getValue());
+                rowIndex++;
+            }
+            cellIndex++;
+            rowIndex = 1;
+        }
+
+        // 首、次列
+        String startTime = zabbixHostData.get(0).get(0).getClock();
+        int end = Integer.valueOf(startTime.substring(startTime.length()-1));
+        if (end < 5) {
+            String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end);
+        } else {
+            String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end + 5);
+        }
+        for (int i=1; i<=sheet.getLastRowNum(); i++) {
+            row = sheet.getRow(i);
+            row.createCell(0).setCellValue(hostId);
+            row.createCell(1).setCellValue(startTime);
+            startTime = String.valueOf(Integer.valueOf(startTime) + 5);
+        }
+
+        return workbook;
+    }
 }

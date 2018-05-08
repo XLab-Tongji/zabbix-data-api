@@ -1,5 +1,6 @@
 package rainlf.zabbix.service;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import rainlf.zabbix.domain.ZabbixHost;
 import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixItemData;
@@ -59,4 +60,9 @@ public interface ZabbixService {
      * @param timeTill
      */
     void exportZabbixHostDataSet(String hostId, String timeFrom, String timeTill);
+
+    /**
+     * 生成Host Dataset文件
+     */
+    Workbook ZabbixHostDataSet(String hostId, String timeFrom, String timeTill);
 }
