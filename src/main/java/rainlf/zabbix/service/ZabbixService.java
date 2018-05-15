@@ -1,10 +1,9 @@
 package rainlf.zabbix.service;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import rainlf.zabbix.domain.ZabbixHost;
-import rainlf.zabbix.domain.ZabbixItem;
-import rainlf.zabbix.domain.ZabbixItemData;
+import rainlf.zabbix.domain.*;
 
+import java.sql.Array;
 import java.util.List;
 
 public interface ZabbixService {
@@ -65,4 +64,29 @@ public interface ZabbixService {
      * 生成Host Dataset文件
      */
     Workbook ZabbixHostDataSet(String hostId, String timeFrom, String timeTill);
+
+    /**
+     * 根据指定ip,port的server获取该server下的所有主机
+     */
+    List<ZabbixHost_details> getZabbixHosts_dynamic(String ip,String port);
+
+    /**
+     * 输入ip,port,host,groupid(array),templateid,description创建新主机
+     */
+    void add_host(String ip, String port, String host, String groupid,String templateid,String description);
+
+    /**
+     * 删除主机
+     */
+    void delete_host(String ip,String port,String hostid);
+
+    /**
+     *获取模板及名字
+     */
+    List<Zabbix_template> getZabbix_template(String ip,String port);
+
+    /**
+     *获取主机组及名字
+     */
+    List<Zabbix_group> getZabbix_template(String ip, String port);
 }

@@ -14,11 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import rainlf.zabbix.consts.ConfigConsts;
 import rainlf.zabbix.domain.ZabbixHost;
+import rainlf.zabbix.domain.ZabbixHost_details;
+import rainlf.zabbix.domain.Zabbix_template;
+import rainlf.zabbix.domain.Zabbix_group;
 import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixItemData;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +53,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     @Override
     public List<ZabbixHost> getZabbixHosts() {
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.get\",\"params\":{\"output\":\"extend\",\"groupids\":\"2\"},\"auth\":\""
                 + auth + "\",\"id\":1}");
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
@@ -113,7 +117,6 @@ public class ZabbixServiceImpl implements ZabbixService {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
         String body = responseEntity.getBody();
         JSONArray resultList = JSON.parseObject(body).getJSONArray("result");
-
         List<ZabbixItemData> zabbixItemDataList = new ArrayList<>();
         for (int i=0; i<resultList.size(); i++) {
             ZabbixItemData zabbixItemData = new ZabbixItemData();
@@ -254,5 +257,61 @@ public class ZabbixServiceImpl implements ZabbixService {
         return workbook;
     }
 
+    @Override
+    public List<ZabbixHost_details> getZabbixHosts_dynamic(String ip, String port) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
+        List<ZabbixHost_details> zabbixHostList = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            ZabbixHost_details zabbixHost = new ZabbixHost_details();
+            zabbixHost.setHost(resultList.getJSONObject(i).getString("host"));
+            zabbixHost.setHostId(resultList.getJSONObject(i).getString("hostid"));
+            zabbixHost.setDescription(resultList.getJSONObject(i).getString("description"));
+            zabbixHostList.add(zabbixHost);
+        }
+        return zabbixHostList;
+    }
+
+    @Override
+    public void add_host(String ip, String port, String host, String groupid, String templateid, String description){
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":{\"type\":1,\"main\":1,\"userip\":1,\"ip\":\"192.168.1.40\",\"dns\":\"\",\"port\":\"10050\"},\"groups\":{\"groupid\":\""+groupid+"\"}},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
+    }
+
+
+    @Override
+    public void delete_host(String ip, String port, String hostid){
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.delete\",\"params\":[\""+hostid+"\"],\"auth\":\""
+                + auth + "\",\"id\":1}");
+        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
+    }
+
+    @Override
+    public List<Zabbix_template> getZabbix_template(String ip, String port) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"template.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
+
+        List<Zabbix_template> zabbixHostList = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            Zabbix_template zabbixHost = new Zabbix_template();
+            zabbixHost.setHost(resultList.getJSONObject(i).getString("host"));
+            zabbixHost.setTemplateid(resultList.getJSONObject(i).getString("templateid"));
+            zabbixHostList.add(zabbixHost);
+        }
+        return zabbixHostList;
+    }
 }
