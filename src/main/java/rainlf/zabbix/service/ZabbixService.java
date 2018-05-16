@@ -88,5 +88,11 @@ public interface ZabbixService {
     /**
      *获取主机组及名字
      */
-    List<Zabbix_group> getZabbix_template(String ip, String port);
+    List<Zabbix_group> getZabbix_group(String ip, String port);
+
+    /**
+     *获取监控项数据
+     */
+
+    List<ZabbixItemData_clock> get_monitordata(String ip,String port,String key,String hostid,String timeFrom,String timeTill);
 }

@@ -11,8 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rainlf.zabbix.domain.ZabbixHost;
+import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixHost_details;
+import rainlf.zabbix.domain.Zabbix_group;
 import rainlf.zabbix.domain.Zabbix_template;
+import rainlf.zabbix.domain.ZabbixItemData_clock;
 import rainlf.zabbix.service.ZabbixService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,9 +92,17 @@ public class ZabbixController {
     }
 
     @ApiOperation(value = "查找指定server下的所有模板和名字")
-    @RequestMapping(value = "get_template", method = RequestMethod.GET)
-    public List<Zabbix_template> getZabbix_group(@RequestParam("ip") String ip,
-                                                    @RequestParam("port") String port) {
+    @RequestMapping(value = "get_group", method = RequestMethod.GET)
+    public List<Zabbix_group> getZabbix_group(@RequestParam("ip") String ip,
+                                              @RequestParam("port") String port) {
         return zabbixService.getZabbix_group(ip,port);
+    }
+
+    @ApiOperation(value="获取监控项数据")
+    @RequestMapping(value="get_monitordata",method = RequestMethod.GET)
+    public List<ZabbixItemData_clock> get_monitordata(@RequestParam("ip") String ip,
+                                                      @RequestParam("port") String port,@RequestParam("hostip") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
+                                                      @RequestParam("timeTill") String timeTill){
+        return  zabbixService.get_monitordata(ip,port,hostid,key,timeFrom,timeTill);
     }
 }

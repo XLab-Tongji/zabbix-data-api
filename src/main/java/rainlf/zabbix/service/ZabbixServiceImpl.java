@@ -19,6 +19,7 @@ import rainlf.zabbix.domain.Zabbix_template;
 import rainlf.zabbix.domain.Zabbix_group;
 import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixItemData;
+import rainlf.zabbix.domain.ZabbixItemData_clock;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -280,7 +281,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     @Override
     public void add_host(String ip, String port, String host, String groupid, String templateid, String description){
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":{\"type\":1,\"main\":1,\"userip\":1,\"ip\":\"192.168.1.40\",\"dns\":\"\",\"port\":\"10050\"},\"groups\":{\"groupid\":\""+groupid+"\"}},\"auth\":\""
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":[{\"type\":1,\"main\":1,\"useip\":1,\"ip\":\"192.168.1.42\",\"dns\":\"\",\"port\":\"10050\"}],\"groups\":[{\"groupid\":\""+groupid+"\"}],\"templates\":[{\"templateid\":\""+templateid+"\"}]},\"auth\":\""
                 + auth + "\",\"id\":1}");
         String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
@@ -313,5 +314,49 @@ public class ZabbixServiceImpl implements ZabbixService {
             zabbixHostList.add(zabbixHost);
         }
         return zabbixHostList;
+    }
+
+    @Override
+    public List<Zabbix_group> getZabbix_group(String ip, String port) {
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"hostgroup.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
+        JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
+
+        List<Zabbix_group> zabbixHostList = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            Zabbix_group zabbixHost = new Zabbix_group();
+            zabbixHost.setName(resultList.getJSONObject(i).getString("name"));
+            zabbixHost.setGroupid(resultList.getJSONObject(i).getString("groupid"));
+            zabbixHostList.add(zabbixHost);
+        }
+        return zabbixHostList;
+    }
+
+    @Override
+    public  List<ZabbixItemData_clock> get_monitordata(String ip,String port,String hostid,String key,String timeFrom,String timeTill){
+        ZabbixItem zabbixItem=getZabbixItem(hostid,key);
+        String auth = getZabbixAuth();
+        String itemId=zabbixItem.getItemId();
+        String valueType=zabbixItem.getValueType();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"itemids\":\""
+                + itemId + "\",\"history\":\""
+                + valueType + "\",\"sortfield\":\"clock\",\"sortorder\":\"ASC\",\"time_from\":\""
+                + timeFrom + ".\",\"time_till\":\""
+                + timeTill + "\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
+        String body = responseEntity.getBody();
+        JSONArray resultList = JSON.parseObject(body).getJSONArray("result");
+        List<ZabbixItemData_clock> zabbixItemData_clocks1 = new ArrayList<>();
+        for (int i=0; i<resultList.size(); i++) {
+            ZabbixItemData_clock zabbixItemData = new ZabbixItemData_clock();
+            zabbixItemData.setClock(resultList.getJSONObject(i).getString("clock"));
+            zabbixItemData.setValue(resultList.getJSONObject(i).getString("value"));
+            zabbixItemData_clocks1.add(zabbixItemData);
+        }
+        return zabbixItemData_clocks1;
     }
 }
