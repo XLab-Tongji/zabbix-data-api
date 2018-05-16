@@ -18,6 +18,7 @@ import rainlf.zabbix.domain.Zabbix_template;
 import rainlf.zabbix.domain.ZabbixItemData_clock;
 import rainlf.zabbix.service.ZabbixService;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -50,17 +51,20 @@ public class ZabbixController {
         zabbixService.exportZabbixHostDataSet(hostId, timeFrom, timeTill);
     }
 
-    @ApiOperation(value="下载生成的EXCEL文件")
-    @RequestMapping(value="filedownload",method=RequestMethod.GET)
-    public void downloadFile(HttpServletResponse response,@RequestParam("hostId") String hostId,
+    @ApiOperation(value = "下载生成的EXCEL文件")
+    @RequestMapping(value = "filedownload",method = RequestMethod.GET)
+    public void downloadFile(HttpServletResponse response,
+                             @RequestParam("hostId") String hostId,
                              @RequestParam("timeFrom") String timeFrom,
-                             @RequestParam("timeTill") String timeTill)throws IOException{
-        Workbook workbook=zabbixService.ZabbixHostDataSet(hostId, timeFrom, timeTill);
-        String filename="Zabbix.xls";
+                             @RequestParam("timeTill") String timeTill) throws IOException {
+        Workbook workbook = zabbixService.ZabbixHostDataSet(hostId, timeFrom, timeTill);
+        String filename = "host" + hostId + ".xlsx";
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment;filename=ZabbixHostDataSet.xls");//默认Excel名称
+        response.setHeader("Content-disposition", "attachment;filename=" + filename);
         response.flushBuffer();
-        workbook.write(response.getOutputStream());
+        ServletOutputStream out = response.getOutputStream();
+        workbook.write(out);
+        out.close();
     }
 
     @ApiOperation(value = "查找指定server下的所有主机")
