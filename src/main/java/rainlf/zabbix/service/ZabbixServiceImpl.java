@@ -279,9 +279,9 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public void add_host(String ip, String port, String host, String groupid, String templateid, String description){
+    public void add_host(String ip, String port, String host,String hostip, String groupid, String templateid, String description){
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":[{\"type\":1,\"main\":1,\"useip\":1,\"ip\":\"192.168.1.42\",\"dns\":\"\",\"port\":\"10050\"}],\"groups\":[{\"groupid\":\""+groupid+"\"}],\"templates\":[{\"templateid\":\""+templateid+"\"}]},\"auth\":\""
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":[{\"type\":1,\"main\":1,\"useip\":1,\"ip\":\""+hostip+"\",\"dns\":\"\",\"port\":\"10050\"}],\"groups\":[{\"groupid\":\""+groupid+"\"}],\"templates\":[{\"templateid\":\""+templateid+"\"}]},\"auth\":\""
                 + auth + "\",\"id\":1}");
         String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
@@ -358,5 +358,10 @@ public class ZabbixServiceImpl implements ZabbixService {
             zabbixItemData_clocks1.add(zabbixItemData);
         }
         return zabbixItemData_clocks1;
+    }
+
+    @Override
+    public void add_cluster(String ip,String port,String key,String hostid,String timeFrom,String timeTill){
+
     }
 }

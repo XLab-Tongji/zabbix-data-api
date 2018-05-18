@@ -73,7 +73,7 @@ public interface ZabbixService {
     /**
      * 输入ip,port,host,groupid(array),templateid,description创建新主机
      */
-    void add_host(String ip, String port, String host, String groupid,String templateid,String description);
+    void add_host(String ip, String port, String host,String hostip ,String groupid,String templateid,String description);
 
     /**
      * 删除主机
@@ -95,4 +95,10 @@ public interface ZabbixService {
      */
 
     List<ZabbixItemData_clock> get_monitordata(String ip,String port,String key,String hostid,String timeFrom,String timeTill);
+
+    /**
+     * 添加集群
+     */
+
+    void add_cluster(String ip,String port,String key,String hostid,String timeFrom,String timeTill);
 }

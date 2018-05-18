@@ -77,8 +77,8 @@ public class ZabbixController {
     @ApiOperation(value = "添加主机")
     @RequestMapping(value = "add_host", method = RequestMethod.GET)
     public void add_host(@RequestParam("ip") String ip,
-                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("groupid") String groupid,@RequestParam("template") String templateid,@RequestParam("description") String description) {
-        zabbixService.add_host(ip,port,host,groupid,templateid,description);
+                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("hostip") String hostip,@RequestParam("groupid") String groupid,@RequestParam("template") String templateid,@RequestParam("description") String description) {
+        zabbixService.add_host(ip,port,host,hostip,groupid,templateid,description);
     }
 
     @ApiOperation(value = "删除主机")
@@ -108,5 +108,12 @@ public class ZabbixController {
                                                       @RequestParam("port") String port,@RequestParam("hostip") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
                                                       @RequestParam("timeTill") String timeTill){
         return  zabbixService.get_monitordata(ip,port,hostid,key,timeFrom,timeTill);
+    }
+
+    @ApiOperation(value="添加集群")
+    @RequestMapping(value="add_cluster")
+    public void add_cluster(@RequestParam("ip") String ip,
+                            @RequestParam("port") String port,@RequestParam("name") String name,@RequestParam("description") String description,@RequestParam("username") String username,@RequestParam("password") String password){
+
     }
 }
