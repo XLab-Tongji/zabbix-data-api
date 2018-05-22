@@ -27,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URLEncoder;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -111,9 +113,23 @@ public class ZabbixController {
     }
 
     @ApiOperation(value="添加集群")
-    @RequestMapping(value="add_cluster")
+    @RequestMapping(value="add_cluster",method=RequestMethod.GET)
     public void add_cluster(@RequestParam("ip") String ip,
-                            @RequestParam("port") String port,@RequestParam("name") String name,@RequestParam("description") String description,@RequestParam("username") String username,@RequestParam("password") String password){
+                            @RequestParam("port") String port,@RequestParam("name") String name,@RequestParam("description") String description,@RequestParam("username") String username,@RequestParam("password") String password) throws SQLException {
+        zabbixService.add_cluster(ip, port, name,description,username,password);
+    }
 
+    @ApiOperation(value = "删除集群")
+    @RequestMapping(value="delete_cluster",method = RequestMethod.GET)
+    public void delete_cluster(@RequestParam("ip") String ip,
+                               @RequestParam("port") String port) throws SQLException {
+        zabbixService.delete_cluster(ip,port);
+    }
+
+    @ApiOperation(value="获得集群")
+    @RequestMapping(value="get_cluster",method=RequestMethod.GET)
+    public List<String> get_cluster(@RequestParam("ip") String ip,
+                                 @RequestParam("port") String port) throws SQLException {
+        return zabbixService.get_cluster(ip,port);
     }
 }

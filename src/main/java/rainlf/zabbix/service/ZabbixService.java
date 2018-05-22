@@ -4,6 +4,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import rainlf.zabbix.domain.*;
 
 import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ZabbixService {
@@ -100,5 +102,17 @@ public interface ZabbixService {
      * 添加集群
      */
 
-    void add_cluster(String ip,String port,String key,String hostid,String timeFrom,String timeTill);
+    void add_cluster(String ip,String port,String name,String description,String username,String password) throws SQLException;
+
+    /**
+     * 删除集群
+     */
+
+    void delete_cluster(String ip,String port) throws SQLException;
+
+    /**
+     * 获取集群
+     */
+
+   List<String> get_cluster(String ip, String port) throws SQLException;
 }

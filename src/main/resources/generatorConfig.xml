@@ -22,9 +22,9 @@
         <!--jdbc的数据库连接 -->
         <jdbcConnection
                 driverClass="com.mysql.jdbc.Driver"
-                connectionURL="jdbc:mysql://localhost:23306/zabbix_data"
+                connectionURL="jdbc:mysql://10.60.38.181:5678/mysql"
                 userId="root"
-                password="root_pwd">
+                password="12345678">
         </jdbcConnection>
 
         <!-- java类型处理器

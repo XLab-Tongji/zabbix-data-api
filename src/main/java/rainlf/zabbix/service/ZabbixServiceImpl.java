@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import rainlf.zabbix.consts.ConfigConsts;
 import rainlf.zabbix.domain.ZabbixHost;
 import rainlf.zabbix.domain.ZabbixHost_details;
@@ -20,10 +21,9 @@ import rainlf.zabbix.domain.Zabbix_group;
 import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixItemData;
 import rainlf.zabbix.domain.ZabbixItemData_clock;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Array;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -361,7 +361,44 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public void add_cluster(String ip,String port,String key,String hostid,String timeFrom,String timeTill){
+    public void add_cluster(String ip,String port,String name,String descriptioin,String usernmae,String password) throws SQLException {
+        Connection connection=null;
+        String url;
+        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        connection=DriverManager.getConnection(url ,"root","12345678");
+        Statement statement=connection.createStatement();
+        String sql="INSERT INTO cluster VALUES"+"("+"'"+ip+"'"+","+"'"+port+"'"+","+"'"+name+"'"+","+"'"+descriptioin+"'"+","+"'"+usernmae+"'"+","+"'"+password+"'"+")";
+        statement.execute(sql);
+        connection.close();
+    }
 
+    @Override
+    public  void delete_cluster(String ip,String port) throws SQLException {
+        Connection connection=null;
+        String url;
+        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        connection=DriverManager.getConnection(url ,"root","12345678");
+        Statement statement=connection.createStatement();
+        String sql="DELETE FROM cluster WHERE "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+"'"+port+"'";
+        statement.execute(sql);
+        connection.close();
+    }
+
+    @Override
+    public  List<String> get_cluster(String ip,String port) throws SQLException {
+        Connection connection=null;
+        String url;
+        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        connection=DriverManager.getConnection(url ,"root","12345678");
+        Statement statement=connection.createStatement();
+        String sql="SELECT * FROM cluster WHERE"+" "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+port;
+        ResultSet resultSet=statement.executeQuery(sql);
+        resultSet.first();
+        List<String> rs=new ArrayList();
+        rs.add(resultSet.getString("ip"));
+        rs.add(resultSet.getString("port"));
+        rs.add(resultSet.getString("name"));
+        rs.add(resultSet.getString("description"));
+        return  rs;
     }
 }
