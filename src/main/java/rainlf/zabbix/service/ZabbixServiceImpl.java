@@ -399,6 +399,20 @@ public class ZabbixServiceImpl implements ZabbixService {
         rs.add(resultSet.getString("port"));
         rs.add(resultSet.getString("name"));
         rs.add(resultSet.getString("description"));
+        connection.close();
         return  rs;
+    }
+
+    @Override
+    public String get_item(String id,String key){
+        String auth = getZabbixAuth();
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
+                + id + "\",\"search\":{\"key_\":\""
+                + key + "\"},\"sortfield\":\"name\"},\"auth\":\""
+                + auth + "\",\"id\":1}");
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
+        String body = responseEntity.getBody();
+        JSONObject result = JSON.parseObject(body).getJSONArray("result").getJSONObject(0);
+        return result.getString("itemid");
     }
 }

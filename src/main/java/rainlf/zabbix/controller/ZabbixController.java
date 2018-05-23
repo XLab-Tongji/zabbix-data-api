@@ -107,7 +107,7 @@ public class ZabbixController {
     @ApiOperation(value="获取监控项数据")
     @RequestMapping(value="get_monitordata",method = RequestMethod.GET)
     public List<ZabbixItemData_clock> get_monitordata(@RequestParam("ip") String ip,
-                                                      @RequestParam("port") String port,@RequestParam("hostip") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
+                                                      @RequestParam("port") String port,@RequestParam("hostid") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
                                                       @RequestParam("timeTill") String timeTill){
         return  zabbixService.get_monitordata(ip,port,hostid,key,timeFrom,timeTill);
     }
@@ -132,4 +132,12 @@ public class ZabbixController {
                                  @RequestParam("port") String port) throws SQLException {
         return zabbixService.get_cluster(ip,port);
     }
+
+    @ApiOperation(value="监控项")
+    @RequestMapping(value="get_item",method =RequestMethod.GET)
+    public ZabbixItem get_item(@RequestParam("id") String id,
+                @RequestParam("key") String key){
+           return zabbixService.getZabbixItem(id,key);
+    }
+
 }

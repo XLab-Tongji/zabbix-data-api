@@ -115,4 +115,6 @@ public interface ZabbixService {
      */
 
    List<String> get_cluster(String ip, String port) throws SQLException;
+
+   String get_item(String id,String key);
 }
