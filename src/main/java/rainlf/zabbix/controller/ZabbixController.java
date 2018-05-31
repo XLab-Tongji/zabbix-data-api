@@ -79,7 +79,7 @@ public class ZabbixController {
     @ApiOperation(value = "添加主机")
     @RequestMapping(value = "add_host", method = RequestMethod.GET)
     public void add_host(@RequestParam("ip") String ip,
-                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("hostip") String hostip,@RequestParam("groupid") String groupid,@RequestParam("template") String templateid,@RequestParam("description") String description) {
+                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("hostip") String hostip,@RequestParam("groupid") String groupid,@RequestParam("templateid") String templateid,@RequestParam("description") String description) {
         zabbixService.add_host(ip,port,host,hostip,groupid,templateid,description);
     }
 
@@ -107,8 +107,8 @@ public class ZabbixController {
     @ApiOperation(value="获取监控项数据")
     @RequestMapping(value="get_monitordata",method = RequestMethod.GET)
     public List<ZabbixItemData_clock> get_monitordata(@RequestParam("ip") String ip,
-                                                      @RequestParam("port") String port,@RequestParam("hostid") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
-                                                      @RequestParam("timeTill") String timeTill){
+                                                      @RequestParam("port") String port,@RequestParam("hostid") String hostid,@RequestParam("key") String key, @RequestParam("time_from") String timeFrom,
+                                                      @RequestParam("time_till") String timeTill){
         return  zabbixService.get_monitordata(ip,port,hostid,key,timeFrom,timeTill);
     }
 
@@ -129,7 +129,7 @@ public class ZabbixController {
     @ApiOperation(value="获得集群")
     @RequestMapping(value="get_cluster",method=RequestMethod.GET)
     public List<String> get_cluster(@RequestParam("ip") String ip,
-                                 @RequestParam("port") String port) throws SQLException {
+                                    @RequestParam("port") String port) throws SQLException {
         return zabbixService.get_cluster(ip,port);
     }
 
@@ -137,7 +137,7 @@ public class ZabbixController {
     @RequestMapping(value="get_item",method =RequestMethod.GET)
     public ZabbixItem get_item(@RequestParam("id") String id,
                 @RequestParam("key") String key){
-           return  zabbixService.getZabbixItem(id,key);
+           return zabbixService.getZabbixItem(id,key);
     }
 
 }
