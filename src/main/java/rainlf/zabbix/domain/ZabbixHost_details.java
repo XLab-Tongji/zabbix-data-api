@@ -1,16 +1,16 @@
 package rainlf.zabbix.domain;
 
 public class ZabbixHost_details {
-    private String hostId;
+    private String hostid;
     private String host;
     private String description;
     public ZabbixHost_details() {
 
     }
 
-    public String getHostId() {
+    public String getHostid() {
 
-        return hostId;
+        return hostid;
     }
 
     public String getHost() {
@@ -23,8 +23,8 @@ public class ZabbixHost_details {
         return description;
     }
 
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
+    public void setHostId(String hostid) {
+        this.hostid = hostid;
     }
 
     public void setHost(String host) {
@@ -38,7 +38,7 @@ public class ZabbixHost_details {
     @Override
     public String toString() {
         return "ZabbixHost{" +
-                "hostId='" + hostId + '\'' +
+                "hostid='" + hostid + '\'' +
                 ", host='" + host + '\'' +
                 ", description='" + description + '\'' +
                 '}';
