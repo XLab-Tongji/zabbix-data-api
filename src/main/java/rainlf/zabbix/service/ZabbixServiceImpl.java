@@ -364,7 +364,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     public void add_cluster(String ip,String port,String name,String descriptioin,String usernmae,String password) throws SQLException {
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
         String sql="INSERT INTO cluster VALUES"+"("+"'"+ip+"'"+","+"'"+port+"'"+","+"'"+name+"'"+","+"'"+descriptioin+"'"+","+"'"+usernmae+"'"+","+"'"+password+"'"+")";
@@ -376,7 +376,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     public  void delete_cluster(String ip,String port) throws SQLException {
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
         String sql="DELETE FROM cluster WHERE "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+"'"+port+"'";
@@ -388,7 +388,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     public List<List<String>> get_cluster() throws SQLException {
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
         String sql="SELECT * FROM cluster ";
