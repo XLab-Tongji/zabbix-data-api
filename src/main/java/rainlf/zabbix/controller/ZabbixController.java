@@ -97,7 +97,7 @@ public class ZabbixController {
         return zabbixService.getZabbix_template(ip,port);
     }
 
-    @ApiOperation(value = "查找指定server下的主机组模板和名字")
+    @ApiOperation(value = "查找指定server下的主机组和名字")
     @RequestMapping(value = "get_group", method = RequestMethod.GET)
     public List<Zabbix_group> getZabbix_group(@RequestParam("ip") String ip,
                                               @RequestParam("port") String port) {
