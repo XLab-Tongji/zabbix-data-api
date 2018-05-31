@@ -137,7 +137,7 @@ public class ZabbixController {
     @RequestMapping(value="get_item",method =RequestMethod.GET)
     public ZabbixItem get_item(@RequestParam("id") String id,
                 @RequestParam("key") String key){
-           return zabbixService.getZabbixItem(id,key);
+           return  zabbixService.getZabbixItem(id,key);
     }
 
 }
