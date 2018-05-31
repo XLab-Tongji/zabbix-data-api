@@ -114,7 +114,7 @@ public interface ZabbixService {
      * 获取集群
      */
 
-   List<String> get_cluster(String ip, String port) throws SQLException;
+   List<List<String>> get_cluster() throws SQLException;
 
    String get_item(String id,String key);
 }
