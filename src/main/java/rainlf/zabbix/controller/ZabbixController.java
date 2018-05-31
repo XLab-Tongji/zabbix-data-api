@@ -128,10 +128,10 @@ public class ZabbixController {
 
     @ApiOperation(value="获得集群")
     @RequestMapping(value="get_cluster",method=RequestMethod.GET)
-    public List<String> get_cluster(@RequestParam("ip") String ip,
-                                    @RequestParam("port") String port) throws SQLException {
-        return zabbixService.get_cluster(ip,port);
+    public List<List<String>> get_cluster() throws SQLException {
+        return zabbixService.get_cluster();
     }
+
 
     @ApiOperation(value="监控项")
     @RequestMapping(value="get_item",method =RequestMethod.GET)
