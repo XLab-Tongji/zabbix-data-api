@@ -1,15 +1,15 @@
 package rainlf.zabbix.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import rainlf.zabbix.configuration.WebSecurityConfig;
 import rainlf.zabbix.domain.ZabbixHost;
 import rainlf.zabbix.domain.ZabbixItem;
 import rainlf.zabbix.domain.ZabbixHost_details;
@@ -19,18 +19,20 @@ import rainlf.zabbix.domain.ZabbixItemData_clock;
 import rainlf.zabbix.service.ZabbixService;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.URLEncoder;
-import java.sql.ResultSet;
+
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.sql.SQLException;
 import java.util.List;
-
+import java.util.Objects;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import rainlf.zabbix.utils.JWTTokenUtils;
+import rainlf.zabbix.dao.UserDao;
 
 @CrossOrigin
 @RestController
@@ -38,6 +40,16 @@ public class ZabbixController {
 
     @Autowired
     private ZabbixService zabbixService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JWTTokenUtils jwtTokenUtils;
+
+
+    @Autowired
+    private UserDao userDao;
 
     @ApiOperation(value = "获取zabbix主机信息")
     @RequestMapping(value = "hosts", method = RequestMethod.GET)
@@ -107,8 +119,8 @@ public class ZabbixController {
     @ApiOperation(value="获取监控项数据")
     @RequestMapping(value="get_monitordata",method = RequestMethod.GET)
     public List<ZabbixItemData_clock> get_monitordata(@RequestParam("ip") String ip,
-                                                      @RequestParam("port") String port,@RequestParam("hostid") String hostid,@RequestParam("key") String key, @RequestParam("timeFrom") String timeFrom,
-                                                      @RequestParam("timeTill") String timeTill){
+                                                      @RequestParam("port") String port,@RequestParam("hostid") String hostid,@RequestParam("key") String key, @RequestParam("time_from") String timeFrom,
+                                                      @RequestParam("time_till") String timeTill){
         return  zabbixService.get_monitordata(ip,port,hostid,key,timeFrom,timeTill);
     }
 
@@ -128,16 +140,79 @@ public class ZabbixController {
 
     @ApiOperation(value="获得集群")
     @RequestMapping(value="get_cluster",method=RequestMethod.GET)
-    public List<String> get_cluster(@RequestParam("ip") String ip,
-                                 @RequestParam("port") String port) throws SQLException {
-        return zabbixService.get_cluster(ip,port);
+    public JSONArray get_cluster() throws SQLException {
+        return zabbixService.get_cluster();
     }
 
     @ApiOperation(value="监控项")
     @RequestMapping(value="get_item",method =RequestMethod.GET)
     public ZabbixItem get_item(@RequestParam("id") String id,
-                @RequestParam("key") String key){
-           return zabbixService.getZabbixItem(id,key);
+                               @RequestParam("key") String key){
+        return zabbixService.getZabbixItem(id,key);
     }
 
+    @ApiOperation(value="注册")
+    @RequestMapping(value="register",method=RequestMethod.GET)
+    public void register(@RequestParam("username") String username,
+                         @RequestParam("password") String password) throws SQLException {
+        zabbixService.register(username,password);
+    }
+
+    @ApiOperation(value="登录")
+    @RequestMapping(value="Login",method=RequestMethod.POST)
+    public String login(HttpServletResponse httpResponse,@RequestParam("username") String username,
+                        @RequestParam("password") String password) throws Exception{
+        //通过用户名和密码创建一个 Authentication 认证对象，实现类为 UsernamePasswordAuthenticationToken
+        /*UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        //如果认证对象不为空
+        if (Objects.nonNull(authenticationToken)){
+            if(userDao.findByName(authenticationToken.getPrincipal().toString())==null){
+                throw new Exception("用户不存在");
+            }
+
+        }
+        try {
+            //通过 AuthenticationManager（默认实现为ProviderManager）的authenticate方法验证 Authentication 对象
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            //将 Authentication 绑定到 SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            //生成Token
+            String token = jwtTokenUtils.createToken(authentication,false);
+            //将Token写入到Http头部
+            httpResponse.addHeader(WebSecurityConfig.AUTHORIZATION_HEADER,"Bearer "+token);
+            return "Bearer "+token;
+        }catch (BadCredentialsException authentication){
+            throw new Exception("密码错误");
+        }*/
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        String password_validation=userDao.findByName(authenticationToken.getPrincipal().toString()).getPassword();
+        if (Objects.nonNull(authenticationToken)){
+             if(userDao.findByName(authenticationToken.getPrincipal().toString())==null){
+                throw new Exception("用户不存在");
+             }
+             /*else if(password!=password_validation){
+                throw new Exception("密码错误");
+             }*/
+        }
+        //Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        //SecurityContextHolder.getContext().setAuthentication(authentication);
+        //if(authentication==null){
+        //    return "yes";
+        //}
+        String token = jwtTokenUtils.createToken(username);
+        httpResponse.addHeader(WebSecurityConfig.AUTHORIZATION_HEADER,"Bearer "+token);
+        return "Bearer "+token;
+    }
+
+    @ApiOperation(value = "test")
+    @RequestMapping(value="test",method=RequestMethod.GET)
+    public int test(@RequestParam("username") String username,
+                    @RequestParam("password") String password){
+        if (userDao.findByName(username)!=null){
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
 }

@@ -364,7 +364,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     public void add_cluster(String ip,String port,String name,String descriptioin,String usernmae,String password) throws SQLException {
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
         String sql="INSERT INTO cluster VALUES"+"("+"'"+ip+"'"+","+"'"+port+"'"+","+"'"+name+"'"+","+"'"+descriptioin+"'"+","+"'"+usernmae+"'"+","+"'"+password+"'"+")";
@@ -376,7 +376,7 @@ public class ZabbixServiceImpl implements ZabbixService {
     public  void delete_cluster(String ip,String port) throws SQLException {
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
         String sql="DELETE FROM cluster WHERE "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+"'"+port+"'";
@@ -385,34 +385,55 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public  List<String> get_cluster(String ip,String port) throws SQLException {
+    public JSONArray get_cluster() throws SQLException {
+        JSONArray clusters=new JSONArray();
         Connection connection=null;
         String url;
-        url="jdbc:mysql://10.60.38.181:5678/mysql";
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
         connection=DriverManager.getConnection(url ,"root","12345678");
         Statement statement=connection.createStatement();
-        String sql="SELECT * FROM cluster WHERE"+" "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+port;
+        String sql="SELECT * FROM cluster ";
         ResultSet resultSet=statement.executeQuery(sql);
         resultSet.first();
-        List<String> rs=new ArrayList();
-        rs.add(resultSet.getString("ip"));
-        rs.add(resultSet.getString("port"));
-        rs.add(resultSet.getString("name"));
-        rs.add(resultSet.getString("description"));
+        List<List<String>> rs=new ArrayList();
+        JSONObject first_rs=new JSONObject();
+        /*first_rs.add(resultSet.getString("ip"));
+        first_rs.add(resultSet.getString("port"));
+        first_rs.add(resultSet.getString("name"));
+        first_rs.add(resultSet.getString("description"));*/
+        first_rs.put("ip",resultSet.getString("ip"));
+        first_rs.put("port",resultSet.getString("port"));
+        first_rs.put("name",resultSet.getString("name"));
+        first_rs.put("description",resultSet.getString("description"));
+        clusters.add(first_rs);
+        while(resultSet.next()){
+            List<String> single_re=new ArrayList<>();
+            /*single_re.add(resultSet.getString("ip"));
+            single_re.add(resultSet.getString("port"));
+            single_re.add(resultSet.getString("name"));
+            single_re.add(resultSet.getString("description"));
+            rs.add(single_re);*/
+            JSONObject cluster=new JSONObject();
+            cluster.put("ip",resultSet.getString("ip"));
+            cluster.put("port",resultSet.getString("port"));
+            cluster.put("name",resultSet.getString("name"));
+            cluster.put("description",resultSet.getString("description"));
+            clusters.add(cluster);
+        }
         connection.close();
-        return  rs;
+        return  clusters;
     }
 
     @Override
-    public String get_item(String id,String key){
-        String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"item.get\",\"params\":{\"output\":\"extend\",\"hostids\":\""
-                + id + "\",\"search\":{\"key_\":\""
-                + key + "\"},\"sortfield\":\"name\"},\"auth\":\""
-                + auth + "\",\"id\":1}");
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl, jsonObject, String.class);
-        String body = responseEntity.getBody();
-        JSONObject result = JSON.parseObject(body).getJSONArray("result").getJSONObject(0);
-        return result.getString("itemid");
+    public void register(String username,String password) throws SQLException {
+        Connection connection=null;
+        String url;
+        url="jdbc:mysql://lab205.jios.org:5678/mysql";
+        connection=DriverManager.getConnection(url ,"root","12345678");
+        Statement statement=connection.createStatement();
+        String sql="INSERT INTO User VALUES"+"("+"'"+username+"'"+","+"'"+password+"'"+")";
+        statement.execute(sql);
+        connection.close();
+
     }
 }

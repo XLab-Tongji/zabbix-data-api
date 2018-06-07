@@ -1,5 +1,6 @@
 package rainlf.zabbix.service;
 
+import com.alibaba.fastjson.JSONArray;
 import org.apache.poi.ss.usermodel.Workbook;
 import rainlf.zabbix.domain.*;
 
@@ -114,7 +115,11 @@ public interface ZabbixService {
      * 获取集群
      */
 
-   List<String> get_cluster(String ip, String port) throws SQLException;
+    JSONArray get_cluster() throws SQLException;
 
-   String get_item(String id,String key);
+    /**
+     * 注册
+     */
+
+    void register(String usernmae,String password) throws SQLException;
 }
