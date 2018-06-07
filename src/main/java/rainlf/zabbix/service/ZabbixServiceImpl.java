@@ -61,7 +61,7 @@ public class ZabbixServiceImpl implements ZabbixService {
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
         List<ZabbixHost> zabbixHostList = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             ZabbixHost zabbixHost = new ZabbixHost();
             zabbixHost.setName(resultList.getJSONObject(i).getString("host"));
             zabbixHost.setHostId(resultList.getJSONObject(i).getString("hostid"));
@@ -119,7 +119,7 @@ public class ZabbixServiceImpl implements ZabbixService {
         String body = responseEntity.getBody();
         JSONArray resultList = JSON.parseObject(body).getJSONArray("result");
         List<ZabbixItemData> zabbixItemDataList = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             ZabbixItemData zabbixItemData = new ZabbixItemData();
             zabbixItemData.setItemId(resultList.getJSONObject(i).getString("itemid"));
             zabbixItemData.setClock(resultList.getJSONObject(i).getString("clock"));
@@ -182,13 +182,13 @@ public class ZabbixServiceImpl implements ZabbixService {
 
         // 首、次列
         String startTime = zabbixHostData.get(0).get(0).getClock();
-        int end = Integer.valueOf(startTime.substring(startTime.length()-1));
+        int end = Integer.valueOf(startTime.substring(startTime.length() - 1));
         if (end < 5) {
             String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end);
         } else {
             String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end + 5);
         }
-        for (int i=1; i<=sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             row = sheet.getRow(i);
             row.createCell(0).setCellValue(hostId);
             row.createCell(1).setCellValue(startTime);
@@ -242,13 +242,13 @@ public class ZabbixServiceImpl implements ZabbixService {
 
         // 首、次列
         String startTime = zabbixHostData.get(0).get(0).getClock();
-        int end = Integer.valueOf(startTime.substring(startTime.length()-1));
+        int end = Integer.valueOf(startTime.substring(startTime.length() - 1));
         if (end < 5) {
             String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end);
         } else {
             String startTimeRe = String.valueOf(Integer.valueOf(startTime) - end + 5);
         }
-        for (int i=1; i<=sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             row = sheet.getRow(i);
             row.createCell(0).setCellValue(hostId);
             row.createCell(1).setCellValue(startTime);
@@ -263,12 +263,12 @@ public class ZabbixServiceImpl implements ZabbixService {
         String auth = getZabbixAuth();
         JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
                 + auth + "\",\"id\":1}");
-        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        String zabbixUrl_dynamic = "http://" + ip + ":" + port + "/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
         List<ZabbixHost_details> zabbixHostList = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             ZabbixHost_details zabbixHost = new ZabbixHost_details();
             zabbixHost.setHost(resultList.getJSONObject(i).getString("host"));
             zabbixHost.setHostId(resultList.getJSONObject(i).getString("hostid"));
@@ -279,21 +279,21 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public void add_host(String ip, String port, String host,String hostip, String groupid, String templateid, String description){
+    public void add_host(String ip, String port, String host, String hostip, String groupid, String templateid, String description) {
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\""+host+"\",\"interfaces\":[{\"type\":1,\"main\":1,\"useip\":1,\"ip\":\""+hostip+"\",\"dns\":\"\",\"port\":\"10050\"}],\"groups\":[{\"groupid\":\""+groupid+"\"}],\"templates\":[{\"templateid\":\""+templateid+"\"}]},\"auth\":\""
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.create\",\"params\":{\"host\":\"" + host + "\",\"interfaces\":[{\"type\":1,\"main\":1,\"useip\":1,\"ip\":\"" + hostip + "\",\"dns\":\"\",\"port\":\"10050\"}],\"groups\":[{\"groupid\":\"" + groupid + "\"}],\"templates\":[{\"templateid\":\"" + templateid + "\"}]},\"auth\":\""
                 + auth + "\",\"id\":1}");
-        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        String zabbixUrl_dynamic = "http://" + ip + ":" + port + "/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
     }
 
 
     @Override
-    public void delete_host(String ip, String port, String hostid){
+    public void delete_host(String ip, String port, String hostid) {
         String auth = getZabbixAuth();
-        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.delete\",\"params\":[\""+hostid+"\"],\"auth\":\""
+        JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"host.delete\",\"params\":[\"" + hostid + "\"],\"auth\":\""
                 + auth + "\",\"id\":1}");
-        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        String zabbixUrl_dynamic = "http://" + ip + ":" + port + "/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
     }
 
@@ -302,12 +302,12 @@ public class ZabbixServiceImpl implements ZabbixService {
         String auth = getZabbixAuth();
         JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"template.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
                 + auth + "\",\"id\":1}");
-        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        String zabbixUrl_dynamic = "http://" + ip + ":" + port + "/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
         List<Zabbix_template> zabbixHostList = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             Zabbix_template zabbixHost = new Zabbix_template();
             zabbixHost.setHost(resultList.getJSONObject(i).getString("host"));
             zabbixHost.setTemplateid(resultList.getJSONObject(i).getString("templateid"));
@@ -321,12 +321,12 @@ public class ZabbixServiceImpl implements ZabbixService {
         String auth = getZabbixAuth();
         JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"hostgroup.get\",\"params\":{\"output\":\"extend\"},\"auth\":\""
                 + auth + "\",\"id\":1}");
-        String zabbixUrl_dynamic="http://"+ip+":"+port+"/api_jsonrpc.php";
+        String zabbixUrl_dynamic = "http://" + ip + ":" + port + "/api_jsonrpc.php";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(zabbixUrl_dynamic, jsonObject, String.class);
         JSONArray resultList = JSON.parseObject(responseEntity.getBody()).getJSONArray("result");
 
         List<Zabbix_group> zabbixHostList = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             Zabbix_group zabbixHost = new Zabbix_group();
             zabbixHost.setName(resultList.getJSONObject(i).getString("name"));
             zabbixHost.setGroupid(resultList.getJSONObject(i).getString("groupid"));
@@ -336,11 +336,11 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public  List<ZabbixItemData_clock> get_monitordata(String ip,String port,String hostid,String key,String timeFrom,String timeTill){
-        ZabbixItem zabbixItem=getZabbixItem(hostid,key);
+    public List<ZabbixItemData_clock> get_monitordata(String ip, String port, String hostid, String key, String timeFrom, String timeTill) {
+        ZabbixItem zabbixItem = getZabbixItem(hostid, key);
         String auth = getZabbixAuth();
-        String itemId=zabbixItem.getItemId();
-        String valueType=zabbixItem.getValueType();
+        String itemId = zabbixItem.getItemId();
+        String valueType = zabbixItem.getValueType();
         JSONObject jsonObject = JSON.parseObject("{\"jsonrpc\":\"2.0\",\"method\":\"history.get\",\"params\":{\"output\":\"extend\",\"itemids\":\""
                 + itemId + "\",\"history\":\""
                 + valueType + "\",\"sortfield\":\"clock\",\"sortorder\":\"ASC\",\"time_from\":\""
@@ -351,7 +351,7 @@ public class ZabbixServiceImpl implements ZabbixService {
         String body = responseEntity.getBody();
         JSONArray resultList = JSON.parseObject(body).getJSONArray("result");
         List<ZabbixItemData_clock> zabbixItemData_clocks1 = new ArrayList<>();
-        for (int i=0; i<resultList.size(); i++) {
+        for (int i = 0; i < resultList.size(); i++) {
             ZabbixItemData_clock zabbixItemData = new ZabbixItemData_clock();
             zabbixItemData.setClock(resultList.getJSONObject(i).getString("clock"));
             zabbixItemData.setValue(resultList.getJSONObject(i).getString("value"));
@@ -361,79 +361,68 @@ public class ZabbixServiceImpl implements ZabbixService {
     }
 
     @Override
-    public void add_cluster(String ip,String port,String name,String descriptioin,String usernmae,String password) throws SQLException {
-        Connection connection=null;
+    public void add_cluster(String ip, String port, String name, String descriptioin, String usernmae, String password) throws SQLException {
+        Connection connection = null;
         String url;
-        url="jdbc:mysql://lab205.jios.org:5678/mysql";
-        connection=DriverManager.getConnection(url ,"root","12345678");
-        Statement statement=connection.createStatement();
-        String sql="INSERT INTO cluster VALUES"+"("+"'"+ip+"'"+","+"'"+port+"'"+","+"'"+name+"'"+","+"'"+descriptioin+"'"+","+"'"+usernmae+"'"+","+"'"+password+"'"+")";
+        url = "jdbc:mysql://lab205.jios.org:5678/mysql";
+        connection = DriverManager.getConnection(url, "root", "12345678");
+        Statement statement = connection.createStatement();
+        String sql = "INSERT INTO cluster VALUES" + "(" + "'" + ip + "'" + "," + "'" + port + "'" + "," + "'" + name + "'" + "," + "'" + descriptioin + "'" + "," + "'" + usernmae + "'" + "," + "'" + password + "'" + ")";
         statement.execute(sql);
         connection.close();
     }
 
     @Override
-    public  void delete_cluster(String ip,String port) throws SQLException {
-        Connection connection=null;
+    public void delete_cluster(String ip, String port) throws SQLException {
+        Connection connection = null;
         String url;
-        url="jdbc:mysql://lab205.jios.org:5678/mysql";
-        connection=DriverManager.getConnection(url ,"root","12345678");
-        Statement statement=connection.createStatement();
-        String sql="DELETE FROM cluster WHERE "+"ip"+"="+"'"+ip+"'"+"AND"+" "+"port"+"="+"'"+port+"'";
+        url = "jdbc:mysql://lab205.jios.org:5678/mysql";
+        connection = DriverManager.getConnection(url, "root", "12345678");
+        Statement statement = connection.createStatement();
+        String sql = "DELETE FROM cluster WHERE " + "ip" + "=" + "'" + ip + "'" + "AND" + " " + "port" + "=" + "'" + port + "'";
         statement.execute(sql);
         connection.close();
     }
 
     @Override
     public JSONArray get_cluster() throws SQLException {
-        JSONArray clusters=new JSONArray();
-        Connection connection=null;
+        JSONArray clusters = new JSONArray();
+        Connection connection = null;
         String url;
-        url="jdbc:mysql://lab205.jios.org:5678/mysql";
-        connection=DriverManager.getConnection(url ,"root","12345678");
-        Statement statement=connection.createStatement();
-        String sql="SELECT * FROM cluster ";
-        ResultSet resultSet=statement.executeQuery(sql);
+        url = "jdbc:mysql://lab205.jios.org:5678/mysql";
+        connection = DriverManager.getConnection(url, "root", "12345678");
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM cluster ";
+        ResultSet resultSet = statement.executeQuery(sql);
         resultSet.first();
-        List<List<String>> rs=new ArrayList();
-        JSONObject first_rs=new JSONObject();
-        /*first_rs.add(resultSet.getString("ip"));
-        first_rs.add(resultSet.getString("port"));
-        first_rs.add(resultSet.getString("name"));
-        first_rs.add(resultSet.getString("description"));*/
-        first_rs.put("ip",resultSet.getString("ip"));
-        first_rs.put("port",resultSet.getString("port"));
-        first_rs.put("name",resultSet.getString("name"));
-        first_rs.put("description",resultSet.getString("description"));
+        List<List<String>> rs = new ArrayList();
+        JSONObject first_rs = new JSONObject();
+        first_rs.put("ip", resultSet.getString("ip"));
+        first_rs.put("port", resultSet.getString("port"));
+        first_rs.put("name", resultSet.getString("name"));
+        first_rs.put("description", resultSet.getString("description"));
         clusters.add(first_rs);
-        while(resultSet.next()){
-            List<String> single_re=new ArrayList<>();
-            /*single_re.add(resultSet.getString("ip"));
-            single_re.add(resultSet.getString("port"));
-            single_re.add(resultSet.getString("name"));
-            single_re.add(resultSet.getString("description"));
-            rs.add(single_re);*/
-            JSONObject cluster=new JSONObject();
-            cluster.put("ip",resultSet.getString("ip"));
-            cluster.put("port",resultSet.getString("port"));
-            cluster.put("name",resultSet.getString("name"));
-            cluster.put("description",resultSet.getString("description"));
+        while (resultSet.next()) {
+            JSONObject cluster = new JSONObject();
+            cluster.put("ip", resultSet.getString("ip"));
+            cluster.put("port", resultSet.getString("port"));
+            cluster.put("name", resultSet.getString("name"));
+            cluster.put("description", resultSet.getString("description"));
             clusters.add(cluster);
         }
         connection.close();
-        return  clusters;
+        return clusters;
     }
 
     @Override
-    public void register(String username,String password) throws SQLException {
-        Connection connection=null;
+    public void register (String username, String password) throws SQLException {
+        Connection connection = null;
         String url;
-        url="jdbc:mysql://lab205.jios.org:5678/mysql";
-        connection=DriverManager.getConnection(url ,"root","12345678");
-        Statement statement=connection.createStatement();
-        String sql="INSERT INTO User VALUES"+"("+"'"+username+"'"+","+"'"+password+"'"+")";
+        url = "jdbc:mysql://lab205.jios.org:5678/mysql";
+        connection = DriverManager.getConnection(url, "root", "12345678");
+        Statement statement = connection.createStatement();
+        String sql = "INSERT INTO User VALUES" + "(" + "'" + username + "'" + "," + "'" + password + "'" + ")";
         statement.execute(sql);
         connection.close();
-
     }
 }

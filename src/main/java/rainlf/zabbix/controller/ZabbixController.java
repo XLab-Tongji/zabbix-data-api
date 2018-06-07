@@ -91,7 +91,7 @@ public class ZabbixController {
     @ApiOperation(value = "添加主机")
     @RequestMapping(value = "add_host", method = RequestMethod.GET)
     public void add_host(@RequestParam("ip") String ip,
-                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("hostip") String hostip,@RequestParam("groupid") String groupid,@RequestParam("template") String templateid,@RequestParam("description") String description) {
+                                                          @RequestParam("port") String port,@RequestParam("host") String host,@RequestParam("hostip") String hostip,@RequestParam("groupid") String groupid,@RequestParam("templateid") String templateid,@RequestParam("description") String description) {
         zabbixService.add_host(ip,port,host,hostip,groupid,templateid,description);
     }
 
@@ -109,7 +109,7 @@ public class ZabbixController {
         return zabbixService.getZabbix_template(ip,port);
     }
 
-    @ApiOperation(value = "查找指定server下的所有模板和名字")
+    @ApiOperation(value = "查找指定server下的主机组和名字")
     @RequestMapping(value = "get_group", method = RequestMethod.GET)
     public List<Zabbix_group> getZabbix_group(@RequestParam("ip") String ip,
                                               @RequestParam("port") String port) {
@@ -141,7 +141,7 @@ public class ZabbixController {
     @ApiOperation(value="获得集群")
     @RequestMapping(value="get_cluster",method=RequestMethod.GET)
     public JSONArray get_cluster() throws SQLException {
-        return zabbixService.get_cluster();
+       return zabbixService.get_cluster();
     }
 
     @ApiOperation(value="监控项")

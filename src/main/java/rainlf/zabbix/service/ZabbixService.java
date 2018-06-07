@@ -114,7 +114,6 @@ public interface ZabbixService {
     /**
      * 获取集群
      */
-
     JSONArray get_cluster() throws SQLException;
 
     /**
