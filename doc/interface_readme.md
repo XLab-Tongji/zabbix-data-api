@@ -2023,3 +2023,59 @@ http://localhost:8080/hosts
   }
 ]
 ```
+
+### Login
+
+
+#### Description (接口描述)
+
+登录，账号密码验证成功之后返回Token.
+
+| | |
+|-|-|
+| Request Method | Post |
+
+
+#### Parameters (参数)
+
+| Name | Located in | Description | Required | Schema |
+|:-:|:-:|:-|:-:|:-|
+| username | query | 账号 | Yes | String |
+| password | query | 密码 | Yes | String |
+
+#### Responses (返回结果)
+
+| Code | Description | Schema |
+|:----:|:--------|:--|
+| 200 | Successful response | *name* : string | 
+| 401 | Unauthorized | *name* : string | 
+| 403 | Forbidden | *name* : string | 
+| 404 | Not Found | *name* : string | 
+
+#### Request Sample (示例请求)
+
+
+```
+http://localhost:8080/Login?username=root 2&password=12345678
+
+```
+
+#### Response Sample (示例结果)
+
+##### Request Headers
+
+```
+
+{
+  "Accept": "*/*"
+}
+
+```
+##### Request Body
+
+```
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJPTEVfQURNSU4sQVVUSF9XUklURSIsInN1YiI6InJvb3QgMiJ9.-4eMv35i8bKwkGsWf8Tav4NCFP9B8777Lp7ga9sL9scHqE0ZSmBoHTC6NASRAdRDgj_xepkt68Tw8KiaKJBWHg
+
+```
+
+
